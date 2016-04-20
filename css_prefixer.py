@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
+import os
 
 # written by Soo. 16.03.18.
-def css_prefixer(file_list):
+def css_prefix(file_list):
+    os.mkdir('./result/css')
     for file in file_list:
         media_flag = False
         origin = open('./airbridge/resource/css/pages/' + file + '.css', 'r')
-        dest = open('./result/' + file + '.scss', 'w')
+        dest = open('./result/css/' + file + '.css', 'w')
 
         line_list = origin.readlines()
         for line in line_list:
@@ -15,14 +17,14 @@ def css_prefixer(file_list):
                     media_flag = False
                     dest.write(line)
                 else:
-                    dest.write('  #home_page ' + line[2:])
+                    dest.write('  #' + file + '_page ' + line[2:])
             else:
                 # not in @media
                 if line.split()[0] == '@media':
                     media_flag = True
                     dest.write(line)
                 else:
-                    dest.write('#home_page ' + line)
+                    dest.write('#' + file + '_page ' + line)
 
         origin.close()
         dest.close()

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # written by Soo. 16.03.18.
+
 media_flag = False
 origin = open('class.scss', 'r')
 dest = open('class2.scss', 'w')

@@ -5,11 +5,13 @@
 
 from time import strftime, localtime
 import re
+import os
 
 def html_to_jsx(file_list):
+    os.mkdir('./result/jsx')
     for file in file_list:
         origin = open('./airbridge/' + file + '.html', 'r')
-        dest = open('./result/' + file + '_page.jsx', 'w')
+        dest = open('./result/jsx/' + file + '.jsx', 'w')
 
         dest.write(
             '/* ===============================================\n' +
@@ -20,10 +22,10 @@ def html_to_jsx(file_list):
                                                   '-More\n'
                                                   '=================================================*/\n'
                                                   '\n'
-                                                  'var React = require(\'react\')\n'
+                                                  'import React, {Component} from \'react\'\n'
                                                   '\n'
-                                                  'module.exports = React.createClass({\n'
-                                                  '  render: function () {\n'
+                                                  'class ' + file.title() + ' extends Component {\n'
+                                                  '  render () {\n'
                                                   '    return (\n'
                                                   '      <div id=')
         )
@@ -62,19 +64,19 @@ def html_to_jsx(file_list):
 
             new_line = new_line.replace(' externalClose=', ' data-externalclose=').replace(' JQueryShowDuration=', ' data-jqueryshowduration=').replace(' JQueryShowAnimation=', ' data-jqueryshowanimation=')
 
-            if '<img ' in new_line:
-                new_line = new_line[:-2] + '/>\n'
+            new_line = re.sub(r"(<img)(\s+)(className='[\w\s]+')(\s+)(src='.+')(>)", r'\1\2\3\4\5/>', new_line)
+
             fixed_line_list.append(new_line)
 
         for line in fixed_line_list:
             dest.write(line)
 
         dest.write(
-            '''      </div>
-            )
-          }
-        })
-        '''
+            '      </div>\n'
+            '    )\n'
+            '  }\n'
+            '})\n'
+            ''
         )
 
         origin.close()
